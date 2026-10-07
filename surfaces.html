@@ -1,0 +1,343 @@
+<title>Where the Cat Can Walk</title>
+<style>
+  :root {
+    --ground: #F6F7F9;
+    --panel: #FFFFFF;
+    --chrome: #E7EAEE;
+    --line: #CDD3DB;
+    --ink: #1B1F26;
+    --ink-2: #4A5462;
+    --ink-3: #78828F;
+
+    --allow: #10796A;
+    --allow-bg: #DCEFEA;
+    --hack: #8F6212;
+    --hack-bg: #F6EBD4;
+    --deny: #A6403A;
+    --deny-bg: #F6E0DE;
+
+    --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", "SF Mono", Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+    --ground: #13161B;
+    --panel: #1A1E25;
+    --chrome: #21262F;
+    --line: #333B47;
+    --ink: #E8ECF2;
+    --ink-2: #A9B3C0;
+    --ink-3: #78828F;
+    --allow: #4FC2A8;
+    --allow-bg: #16302C;
+    --hack: #D8A448;
+    --hack-bg: #322713;
+    --deny: #E07A70;
+    --deny-bg: #331B19;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #13161B;
+    --panel: #1A1E25;
+    --chrome: #21262F;
+    --line: #333B47;
+    --ink: #E8ECF2;
+    --ink-2: #A9B3C0;
+    --ink-3: #78828F;
+
+    --allow: #4FC2A8;
+    --allow-bg: #16302C;
+    --hack: #D8A448;
+    --hack-bg: #322713;
+    --deny: #E07A70;
+    --deny-bg: #331B19;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  .wrap {
+    max-width: 62rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  header { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: clamp(1.6rem, 4vw, 2.3rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .lede {
+    color: var(--ink-2);
+    max-width: 46ch;
+    margin: 0;
+  }
+
+  h2 {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 600;
+    margin: 0 0 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* ---- diagram ---- */
+  .figure {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.25rem;
+    overflow-x: auto;
+  }
+  .figure svg { display: block; min-width: 46rem; width: 100%; height: auto; }
+
+  .zone-label { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.04em; }
+  .zone-api { font-family: var(--mono); font-size: 8px; fill: var(--ink-3); }
+  .pin { font-family: var(--mono); font-size: 9px; font-weight: 700; }
+
+  /* ---- legend ---- */
+  .legend { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.1rem; }
+  .legend div { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--ink-2); }
+  .swatch { width: 0.85rem; height: 0.85rem; border-radius: 2px; flex: none; }
+
+  /* ---- reference ---- */
+  .group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .row {
+    display: grid;
+    grid-template-columns: 1.6rem 12rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.7rem 0.9rem;
+    border-radius: 4px;
+    border-left: 3px solid transparent;
+    background: var(--panel);
+  }
+  .row .n { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-3); font-weight: 700; }
+  .row .place { font-weight: 600; font-size: 0.92rem; }
+  .row .how { color: var(--ink-2); font-size: 0.86rem; }
+  .row code {
+    font-family: var(--mono);
+    font-size: 0.8em;
+    background: var(--chrome);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+  .allow { border-left-color: var(--allow); }
+  .hack  { border-left-color: var(--hack); }
+  .deny  { border-left-color: var(--deny); }
+  .allow .n { color: var(--allow); }
+  .hack  .n { color: var(--hack); }
+  .deny  .n { color: var(--deny); }
+
+  @media (max-width: 40rem) {
+    .row { grid-template-columns: 1.4rem 1fr; }
+    .row .how { grid-column: 2; }
+  }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding-top: 1.25rem;
+    color: var(--ink-3);
+    font-size: 0.82rem;
+  }
+  footer code { font-family: var(--mono); }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">VS Code extension API · surface map</div>
+    <h1>Where the cat can walk</h1>
+    <p class="lede">Every region of the VS Code window, marked by whether an extension is allowed to draw in it. Verified against <code style="font-family:var(--mono)">@types/vscode</code>, not memory.</p>
+  </header>
+
+  <section>
+    <h2>The window, marked</h2>
+    <div class="figure">
+      <svg viewBox="0 0 760 430" role="img" aria-label="Annotated diagram of the VS Code window showing which regions an extension may draw in">
+        <defs>
+          <style>
+            .fill-allow { fill: var(--allow-bg); }
+            .fill-hack  { fill: var(--hack-bg); }
+            .fill-deny  { fill: var(--deny-bg); }
+            .st-allow { stroke: var(--allow); }
+            .st-hack  { stroke: var(--hack); }
+            .st-deny  { stroke: var(--deny); }
+            .tx-allow { fill: var(--allow); }
+            .tx-hack  { fill: var(--hack); }
+            .tx-deny  { fill: var(--deny); }
+            .box { stroke-width: 1.25; }
+            .lbl { fill: var(--ink); }
+          </style>
+        </defs>
+
+        <!-- window shell -->
+        <rect x="8" y="8" width="744" height="414" rx="6" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+
+        <!-- 1 title bar -->
+        <rect class="box fill-hack st-hack" x="14" y="14" width="732" height="26" rx="3"/>
+        <text class="pin tx-hack" x="22" y="31">1</text>
+        <text class="zone-label lbl" x="38" y="31">TITLE BAR</text>
+        <text class="zone-api" x="120" y="31">rewrite the window.title setting · no real API</text>
+        <!-- window controls -->
+        <rect class="box fill-deny st-deny" x="668" y="17" width="74" height="20" rx="2"/>
+        <text class="pin tx-deny" x="676" y="31">9</text>
+        <text class="zone-api" x="690" y="31">— □ ✕</text>
+
+        <!-- 2 activity bar -->
+        <rect class="box fill-allow st-allow" x="14" y="44" width="34" height="336" rx="3"/>
+        <text class="pin tx-allow" x="26" y="60">2</text>
+        <text class="zone-label lbl" x="31" y="230" transform="rotate(-90 31 230)" text-anchor="middle">ACTIVITY BAR</text>
+
+        <!-- 3 primary sidebar -->
+        <rect class="box fill-allow st-allow" x="52" y="44" width="150" height="336" rx="3"/>
+        <text class="pin tx-allow" x="60" y="60">3</text>
+        <text class="zone-label lbl" x="76" y="60">SIDEBAR</text>
+        <text class="zone-api" x="60" y="76">registerWebviewView-</text>
+        <text class="zone-api" x="60" y="87">Provider</text>
+        <text class="zone-api" x="60" y="105">full HTML. any pixel.</text>
+
+        <!-- 4 tab bar -->
+        <rect class="box fill-deny st-deny" x="206" y="44" width="396" height="24" rx="3"/>
+        <text class="pin tx-deny" x="214" y="60">4</text>
+        <text class="zone-label lbl" x="230" y="60">EDITOR TAB BAR</text>
+        <rect class="box fill-hack st-hack" x="552" y="47" width="46" height="18" rx="2"/>
+        <text class="pin tx-hack" x="558" y="60">5</text>
+        <text class="zone-api" x="570" y="60">⚙ ⋯</text>
+
+        <!-- breadcrumbs -->
+        <rect class="box fill-deny st-deny" x="206" y="72" width="396" height="18" rx="3"/>
+        <text class="pin tx-deny" x="214" y="85">4</text>
+        <text class="zone-api" x="230" y="85">BREADCRUMBS — locked</text>
+
+        <!-- 6 editor text area -->
+        <rect class="box fill-allow st-allow" x="206" y="94" width="330" height="204" rx="3"/>
+        <text class="pin tx-allow" x="214" y="110">6</text>
+        <text class="zone-label lbl" x="230" y="110">EDITOR TEXT AREA</text>
+        <text class="zone-api" x="214" y="128">createTextEditorDecorationType</text>
+        <text class="zone-api" x="214" y="142">inline text · gutter icons · CodeLens</text>
+        <text class="zone-api" x="214" y="156">inlay hints · hovers · line colors</text>
+        <text class="zone-api" x="214" y="178">THE CAT LIVES HERE ↴</text>
+        <text class="zone-label tx-allow" x="214" y="200">🐈 ·········· 🐈</text>
+        <text class="zone-api" x="214" y="222">gutter = left edge  ·  past end-of-line = right edge</text>
+        <text class="zone-api" x="214" y="236">never covers a character</text>
+
+        <!-- 7 minimap -->
+        <rect class="box fill-deny st-deny" x="540" y="94" width="40" height="204" rx="3"/>
+        <text class="pin tx-deny" x="548" y="110">7</text>
+        <text class="zone-label lbl" x="560" y="200" transform="rotate(-90 560 200)" text-anchor="middle">MINIMAP</text>
+
+        <!-- 8 overview ruler -->
+        <rect class="box fill-hack st-hack" x="584" y="94" width="18" height="204" rx="3"/>
+        <text class="pin tx-hack" x="587" y="110">8</text>
+        <text class="zone-label lbl" x="593" y="210" transform="rotate(-90 593 210)" text-anchor="middle">RULER</text>
+
+        <!-- 10 panel -->
+        <rect class="box fill-allow st-allow" x="206" y="302" width="396" height="78" rx="3"/>
+        <text class="pin tx-allow" x="214" y="318">10</text>
+        <text class="zone-label lbl" x="238" y="318">PANEL — terminal / problems row</text>
+        <text class="zone-api" x="214" y="336">viewsContainers.panel + webview view</text>
+        <text class="zone-api" x="214" y="350">full HTML. this is where IDEA.md puts the jump.</text>
+        <text class="zone-api" x="214" y="366">webviewView.title and .badge are writable</text>
+
+        <!-- 11 secondary sidebar -->
+        <rect class="box fill-allow st-allow" x="606" y="44" width="140" height="336" rx="3"/>
+        <text class="pin tx-allow" x="614" y="60">11</text>
+        <text class="zone-label lbl" x="638" y="60">SECONDARY</text>
+        <text class="zone-label lbl" x="638" y="73">SIDEBAR</text>
+        <text class="zone-api" x="614" y="92">same webview view —</text>
+        <text class="zone-api" x="614" y="103">user drags it here</text>
+
+        <!-- 12 status bar -->
+        <rect class="box fill-allow st-allow" x="14" y="384" width="732" height="26" rx="3"/>
+        <text class="pin tx-allow" x="22" y="401">12</text>
+        <text class="zone-label lbl" x="46" y="401">STATUS BAR</text>
+        <text class="zone-api" x="130" y="401">createStatusBarItem · text + codicons · alignment left/right only</text>
+
+        <!-- 13 the gaps -->
+        <line x1="602" y1="44" x2="602" y2="380" class="st-deny" stroke-width="3" stroke-dasharray="4 3"/>
+        <text class="pin tx-deny" x="594" y="376">13</text>
+      </svg>
+
+      <div class="legend">
+        <div><span class="swatch" style="background: var(--allow)"></span> Allowed — a real, documented API</div>
+        <div><span class="swatch" style="background: var(--hack)"></span> Reachable, but by a side door</div>
+        <div><span class="swatch" style="background: var(--deny)"></span> Locked — no API exists</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Allowed — draw freely</h2>
+    <div class="group">
+      <div class="row allow"><span class="n">2</span><span class="place">Activity bar</span><span class="how">Your own icon and container via <code>contributes.viewsContainers.activitybar</code>. A number badge on it. The icon itself cannot animate.</span></div>
+      <div class="row allow"><span class="n">3</span><span class="place">Primary sidebar</span><span class="how"><code>registerWebviewViewProvider</code> — a full HTML page. Every pixel inside it is yours.</span></div>
+      <div class="row allow"><span class="n">6</span><span class="place">Editor text area</span><span class="how"><code>createTextEditorDecorationType</code> — text or an image before, after, or on top of any line; gutter icons; CodeLens above a line; inlay hints; hovers; line and background colors.</span></div>
+      <div class="row allow"><span class="n">10</span><span class="place">Bottom panel</span><span class="how">Same webview view, in <code>viewsContainers.panel</code>. Its tab title and its badge are both writable at runtime — the two escalation rungs in IDEA.md.</span></div>
+      <div class="row allow"><span class="n">11</span><span class="place">Secondary sidebar</span><span class="how">Not a separate contribution point. A view you contribute elsewhere can be dragged here by you, and it stays.</span></div>
+      <div class="row allow"><span class="n">12</span><span class="place">Status bar</span><span class="how"><code>createStatusBarItem</code>. Text, codicons, a background color. You pick left or right and a priority number — not a pixel position.</span></div>
+      <div class="row allow"><span class="n">—</span><span class="place">Editor as a tab</span><span class="how"><code>createWebviewPanel</code> opens a tab holding a real web page. The one place with genuinely free pixel movement — at the cost of an editor slot.</span></div>
+      <div class="row allow"><span class="n">—</span><span class="place">Notifications</span><span class="how"><code>showInformationMessage</code>, <code>withProgress</code>. Bottom-right toasts. The last rung on the ladder.</span></div>
+      <div class="row allow"><span class="n">—</span><span class="place">File tree labels</span><span class="how"><code>registerFileDecorationProvider</code> — a badge and color on filenames in the Explorer.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Reachable, but by a side door</h2>
+    <div class="group">
+      <div class="row hack"><span class="n">1</span><span class="place">Window title bar</span><span class="how">No API. But VS Code renders it from the <code>window.title</code> setting, and an extension can rewrite that setting on a timer. Costs a <code>settings.json</code> write per frame, and it is global to every window.</span></div>
+      <div class="row hack"><span class="n">5</span><span class="place">Tab bar, far right</span><span class="how">A <code>menus.editor/title</code> command icon lands beside the split and <code>⋯</code> buttons. It can change; it cannot move. VS Code owns its position.</span></div>
+      <div class="row hack"><span class="n">8</span><span class="place">Overview ruler</span><span class="how"><code>overviewRulerLane</code> paints colored ticks in the scrollbar track. Colors only — no shape, no image, no emoji.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Locked — no API exists</h2>
+    <div class="group">
+      <div class="row deny"><span class="n">4</span><span class="place">Tab bar &amp; breadcrumbs</span><span class="how">Tab labels, tab order, the breadcrumb row. You can set the title of a webview <em>you own</em>, and nothing else.</span></div>
+      <div class="row deny"><span class="n">7</span><span class="place">Minimap</span><span class="how">Rendered by VS Code from the document. Nothing can be drawn into it.</span></div>
+      <div class="row deny"><span class="n">9</span><span class="place">Window controls &amp; menu bar</span><span class="how">Native OS chrome. Out of reach entirely.</span></div>
+      <div class="row deny"><span class="n">13</span><span class="place">The gaps between panes</span><span class="how">Borders, splitters, the space between the editor and the sidebar. This is what stops one pet from sliding around the window — there is no surface in between to walk on.</span></div>
+      <div class="row deny"><span class="n">—</span><span class="place">A free-floating overlay</span><span class="how">Drawing on top of the whole workbench. Only patching <code>workbench.html</code> reaches it: triggers the "installation is corrupt" warning, breaks on every VS Code update, cannot be published to the Marketplace.</span></div>
+      <div class="row deny"><span class="n">—</span><span class="place">Another extension's webview</span><span class="how">The Claude Code and Codex chat panes are sandboxed iframes. No extension can inject into another's DOM.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    The practical consequence for Oi: a pet cannot travel continuously around the window, because zone <strong>13</strong> has no floor. It can either roam freely inside one surface, or teleport between several. Those are the only two shapes available.
+  </footer>
+
+</div>

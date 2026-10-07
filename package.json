@@ -1,0 +1,78 @@
+{
+  "name": "oi",
+  "displayName": "Oi!",
+  "description": "A pixel pet that shouts your name when your AI agent finishes.",
+  "version": "0.0.1",
+  "publisher": "meet",
+  "icon": "media/icon.png",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "oi.start",
+        "title": "Oi: Start (roam the code)"
+      },
+      {
+        "command": "oi.lap",
+        "title": "Oi: Walk above the status bar"
+      },
+      {
+        "command": "oi.shout",
+        "title": "Oi: Shout (take over the title bar)"
+      },
+      {
+        "command": "oi.stop",
+        "title": "Oi: Stop"
+      },
+      {
+        "command": "oi.ack",
+        "title": "Oi: Acknowledge"
+      }
+    ],
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "oi",
+          "title": "Oi!",
+          "icon": "media/cat.svg"
+        }
+      ]
+    },
+    "views": {
+      "oi": [
+        {
+          "type": "webview",
+          "id": "oi.walk",
+          "name": "Oi!"
+        }
+      ],
+      "explorer": [
+        {
+          "id": "oi.usage",
+          "name": "Claude Usage"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "vscode:prepublish": "npm run compile",
+    "test": "node name-stretch.js && npm run compile && node usage-check.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.0"
+  }
+}
