@@ -18,7 +18,7 @@ repository itself, so an infected branch is noticed even when it comes from a ma
 The job runs `node tools/npm-guard/cli.js scan .` and fails (exit code 1) when the loader is found.
 
 Once the `npm-guard` package is published you can replace step 1 with
-`npx --yes npm-guard@<exact version> scan .` in the workflow and skip vendoring.
+`npx --yes @meetroj/npm-guard@<exact version> scan .` in the workflow and skip vendoring.
 
 ### What this does and does not do
 

@@ -12,7 +12,8 @@ const tmp = (n) => fs.mkdtempSync(path.join(os.tmpdir(), `npm-guard-cli-${n}-`))
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
 assert.strictEqual(pkg.dependencies, undefined, 'no runtime dependency');
 assert.strictEqual(pkg.scripts, undefined, 'no install script: installing the package changes nothing');
-assert.strictEqual(pkg.private, true, 'private until the name and licence are decided: it cannot be published by accident');
+assert.notStrictEqual(pkg.private, true, 'public: npm refuses to publish a private package');
+assert.strictEqual(pkg.name, '@meetroj/npm-guard', 'scoped: the plain name is too close to an existing package');
 assert.ok(pkg.bin['npm-guard']);
 
 const out = tmp('pack');
@@ -31,7 +32,7 @@ assert.ok(fs.existsSync(bin), 'the npm-guard command is linked');
 
 const clean = tmp('clean');
 fs.writeFileSync(path.join(clean, 'ok.js'), 'console.log(1);\n');
-const cli = path.join(proj, 'node_modules', 'npm-guard', 'dist', 'cli.js');
+const cli = path.join(proj, 'node_modules', '@meetroj', 'npm-guard', 'dist', 'cli.js');
 const scan = spawnSync(process.execPath, [cli, 'scan', clean], { encoding: 'utf8' });
 assert.strictEqual(scan.status, 0);
 assert.ok(scan.stdout.includes('No threats detected by the current rules.'));

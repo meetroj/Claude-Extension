@@ -1,5 +1,5 @@
 // The core gag: meet! -> meeett! -> meeettt!!
-// Run: node name-stretch.js
+// Run: node src/pet/name-stretch.js
 
 /** @param {string} name @param {number} n escalation level (0 = first jump) */
 function stretch(name, n) {

@@ -1,14 +1,17 @@
-# Oi!
+# Status for Claude Code
 
-A pixel pet that shouts your name when your AI agent finishes.
+See your Claude Code usage at a glance, right in the VS Code status bar.
 
-Also shows Claude Code usage in the status bar, in Claude orange: what this folder's session is
-doing and today's tokens across all folders. Hover it for a card with your plan limits (5h, 7d,
-per-model), today's tokens by model and the current prompt. Click it for every session and
-subagent in the **Claude Usage** view.
+- **What Claude is doing**: working, done or stopped, for the folder you have open.
+- **Today's tokens**: input and output tokens across all your folders. Cache re-reads are not counted, so the number matches what Claude actually wrote and read fresh.
+- **Hover card**: your plan limits (5h, 7d, per model), today's tokens by model and the current prompt.
+- **Click it** to open the **Claude Usage** view with every session and subagent, with tokens for each.
 
-Everything is read from files Claude Code already keeps on disk. Plan limits are whatever Claude
-Code last fetched, so the card says when that was.
+Everything is read from files Claude Code already keeps on disk, and nothing is sent anywhere. Plan limits are whatever Claude Code last fetched, so the card says when that was.
+
+## Extras
+
+Run **Claude Status: Walk in the status bar** from the Command Palette to get a small cat walking along the middle of the status bar. Click it to stop it.
 
 ## npm-guard (malware loader check)
 

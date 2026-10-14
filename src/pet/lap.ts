@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 /** Borrow a user setting, then hand it back exactly as it was. */
-class Borrowed<T> {
+export class Borrowed<T> {
   private saved?: T;
   private held = false;
 
@@ -37,7 +37,7 @@ const page = (walking: boolean) => `<!DOCTYPE html>
     100%  { left: 0; transform: scaleX(1); }
   }
 </style>
-${walking ? '<div id="pet" title="Oi! — click to acknowledge">🐈</div>' : ''}
+${walking ? '<div id="pet" title="Claude Status: click to acknowledge">🐈</div>' : ''}
 <script>
   const vs = acquireVsCodeApi();
   document.getElementById('pet')?.addEventListener('click', () => vs.postMessage('ack'));

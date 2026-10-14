@@ -1,9 +1,9 @@
 {
   "name": "oi",
-  "displayName": "Oi!",
-  "description": "A pixel pet that shouts your name when your AI agent finishes.",
-  "version": "0.0.1",
-  "publisher": "meet",
+  "displayName": "Status for Claude Code",
+  "description": "See your Claude Code usage at a glance: what the session is doing, today's tokens, and your plan limits, right in the status bar.",
+  "version": "0.0.4",
+  "publisher": "meetroj",
   "icon": "media/icon.png",
   "license": "MIT",
   "engines": {
@@ -20,23 +20,23 @@
     "commands": [
       {
         "command": "oi.start",
-        "title": "Oi: Start (roam the code)"
+        "title": "Claude Status: Start (roam the code)"
       },
       {
         "command": "oi.lap",
-        "title": "Oi: Walk above the status bar"
+        "title": "Claude Status: Walk in the status bar"
       },
       {
         "command": "oi.shout",
-        "title": "Oi: Shout (take over the title bar)"
+        "title": "Claude Status: Shout (take over the title bar)"
       },
       {
         "command": "oi.stop",
-        "title": "Oi: Stop"
+        "title": "Claude Status: Stop"
       },
       {
         "command": "oi.ack",
-        "title": "Oi: Acknowledge"
+        "title": "Claude Status: Acknowledge"
       },
       {
         "command": "npmGuard.scan",
@@ -75,8 +75,8 @@
       "panel": [
         {
           "id": "oi",
-          "title": "Oi!",
-          "icon": "media/cat.svg"
+          "title": "Claude Status",
+          "icon": "media/claude.svg"
         }
       ]
     },
@@ -85,7 +85,7 @@
         {
           "type": "webview",
           "id": "oi.walk",
-          "name": "Oi!"
+          "name": "Claude Status"
         }
       ],
       "explorer": [
@@ -97,6 +97,21 @@
     },
     "configuration": [
       {
+        "title": "Claude Status",
+        "properties": {
+          "oi.autoPet": {
+            "type": "boolean",
+            "default": false,
+            "description": "Start the pet when Claude starts working and have it shout your name when Claude finishes. Click the pet to stop it."
+          },
+          "oi.name": {
+            "type": "string",
+            "default": "meet",
+            "description": "The name the pet shouts."
+          }
+        }
+      },
+      {
         "title": "npm-guard",
         "properties": {
           "npmGuard.scanOnOpen": {
@@ -106,13 +121,22 @@
           }
         }
       }
-    ]
+    ],
+    "icons": {
+      "oi-claude": {
+        "description": "Claude",
+        "default": {
+          "fontPath": "media/claude.woff",
+          "fontCharacter": "\\E001"
+        }
+      }
+    }
   },
   "scripts": {
     "compile": "tsc -p .",
     "watch": "tsc -watch -p .",
     "vscode:prepublish": "npm run compile",
-    "test": "node name-stretch.js && npm run compile && node usage-check.js && node src/npm-guard/guard-check.js && node src/npm-guard/guard-ui-check.js",
+    "test": "node src/pet/name-stretch.js && npm run compile && node src/status/usage-check.js && node src/npm-guard/guard-check.js && node src/npm-guard/guard-ui-check.js",
     "build:cli": "npm run compile && node cli/build.js",
     "test:cli": "npm run build:cli && node cli/cli-check.js"
   },
@@ -121,6 +145,18 @@
     "@types/vscode": "^1.90.0",
     "typescript": "^5.5.0"
   },
+  "keywords": [
+    "claude",
+    "claude code",
+    "anthropic",
+    "usage",
+    "tokens",
+    "status bar",
+    "ai",
+    "security",
+    "malware",
+    "git hooks"
+  ],
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": "limited",

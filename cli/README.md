@@ -5,7 +5,7 @@ file, a `node api.js &&` prefix in `package.json` scripts, a payload hidden afte
 at the end of a config file, and fake font files that are really JavaScript.
 
 ```
-npm install -g npm-guard      # installs the command only; it changes nothing else
+npm install -g @meetroj/npm-guard      # installs the command only; it changes nothing else
 npm-guard scan [folder]       # look; exit code 1 if something is found
 npm-guard fix [folder]        # shows the exact changes, asks twice, backs up first
 npm-guard restore             # asks first; will not overwrite edits you made after the fix

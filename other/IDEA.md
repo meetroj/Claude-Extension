@@ -113,7 +113,7 @@ The first three match the original example exactly.
 Jump height rises alongside it: `height = min(20 + n * 8, 120)` px — capped so
 the pet does not leave the panel.
 
-Runnable check: `node name-stretch.js`
+Runnable check: `node src/pet/name-stretch.js`
 
 ---
 

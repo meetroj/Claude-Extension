@@ -2,7 +2,7 @@
 // Run: npm test   (reads ./out, so it compiles first)
 
 const assert = require('assert');
-const { parse, sum, total } = require('./out/transcript');
+const { parse, sum, total } = require('../../out/status/transcript');
 
 const usage = (input, output, read, write) => ({
   input_tokens: input,

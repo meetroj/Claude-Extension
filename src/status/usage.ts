@@ -13,9 +13,10 @@ const SHOWN = 3; // most recent sessions of this folder
  */
 const STALE = 5 * 60_000;
 const QUIET = 60 * 60_000; // past this a session is history, and the status bar stops naming its state
-const CLAUDE_ORANGE = '#D97757';
 
-type Status = 'working' | 'done' | 'stopped';
+const CLAUDE_ORANGE = '#D97757';
+export type Status = 'working' | 'done' | 'stopped';
+const FACE: Record<Status, string> = { working: '🤔', done: '😊', stopped: '😴' };
 const ICON: Record<Status, string> = { working: 'loading~spin', done: 'check', stopped: 'circle-slash' };
 
 interface Seen {
@@ -208,12 +209,17 @@ function summarize(s: Session, now: number) {
   };
 }
 
-/** The status bar line: what this folder's session is doing, and today's tokens on this machine. */
-function headline(newest: Session | undefined, today: Response[], now: number): string {
+/** What this folder's newest session is doing, or nothing once it is history. */
+function liveStatus(newest: Session | undefined, now: number): Status | undefined {
   const s = newest && summarize(newest, now);
-  const live = s && now - s.mtime <= QUIET ? s.st : undefined;
+  return s && now - s.mtime <= QUIET ? s.st : undefined;
+}
+
+/** The status bar line: what this folder's session is doing, and today's tokens on this machine. */
+function headline(live: Status | undefined, today: Response[]): string {
   const tokens = fmt(total(sum(...today.map((r) => r.tokens))));
-  return `$(${live ? ICON[live] : 'sparkle'}) Claude${live ? ' ' + live : ''} · ${tokens} today`;
+  // a face for each state; the Claude mark (an icon font, see contributes.icons) when there is no live session
+  return `${live ? FACE[live] : '$(oi-claude)'} Claude${live ? ' ' + live : ''} · ${tokens} today`;
 }
 
 /** The hover card behind the status bar line. */
@@ -307,7 +313,7 @@ function sessionNode(s: Session, now: number): Node {
  * a status bar line (today's tokens), a hover card on it (plan limits, today by model, this
  * folder's session), and the "Claude Usage" view with every session and subagent in full.
  */
-export function showUsage(): vscode.Disposable {
+export function showUsage(onStatus: (live: Status | undefined) => void): vscode.Disposable {
   const changed = new vscode.EventEmitter<void>();
   let roots: Node[] = [];
   let shown = '';
@@ -341,7 +347,9 @@ export function showUsage(): vscode.Disposable {
       const today = await loadSince(new Date(now).setHours(0, 0, 0, 0));
       plan = await loadPlan().catch(() => plan); // missing, or caught mid-write: keep the last good one
 
-      const line = headline(sessions[0], today, now);
+      const live = liveStatus(sessions[0], now);
+      onStatus(live);
+      const line = headline(live, today);
       if (line !== bar.text) {
         bar.text = line;
         bar.show();
@@ -378,5 +386,9 @@ export function showUsage(): vscode.Disposable {
   // Swap for fs.watch if it shows in a profile.
   const timer = setInterval(refresh, POLL);
   refresh();
-  return vscode.Disposable.from(view, changed, bar, { dispose: () => clearInterval(timer) });
+  return vscode.Disposable.from(view, changed, bar, {
+    dispose: () => {
+      clearInterval(timer);
+    },
+  });
 }
