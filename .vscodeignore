@@ -3,3 +3,5 @@ src/**
 **/*.map
 tsconfig.json
 node_modules/**
+cli/**
+ci/**

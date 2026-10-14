@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { LapPet } from './lap';
 import { EditorPet } from './editorPet';
+import { registerGuard } from './npm-guard/guard';
 import { showUsage } from './usage';
 
 const PET = '\u{1F408}';
@@ -16,6 +17,7 @@ function recoverTitle() {
 
 export function activate(ctx: vscode.ExtensionContext) {
   recoverTitle();
+  registerGuard(ctx);
 
   const lap = new LapPet();
   const roamer = new EditorPet(ctx.extensionUri);

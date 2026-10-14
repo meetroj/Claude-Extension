@@ -37,6 +37,38 @@
       {
         "command": "oi.ack",
         "title": "Oi: Acknowledge"
+      },
+      {
+        "command": "npmGuard.scan",
+        "title": "npm-guard: Scan this folder"
+      },
+      {
+        "command": "npmGuard.fix",
+        "title": "npm-guard: Fix what it safely can (shows the exact changes, asks twice, never deletes a file)"
+      },
+      {
+        "command": "npmGuard.restore",
+        "title": "npm-guard: Restore the last backup (asks first)"
+      },
+      {
+        "command": "npmGuard.protectRepo",
+        "title": "npm-guard: Protect this repository (its own git hooks, e.g. husky)"
+      },
+      {
+        "command": "npmGuard.unprotectRepo",
+        "title": "npm-guard: Unprotect this repository (remove exactly that)"
+      },
+      {
+        "command": "npmGuard.install",
+        "title": "npm-guard: Turn on protection (git hooks and Claude Code)"
+      },
+      {
+        "command": "npmGuard.uninstall",
+        "title": "npm-guard: Turn off protection"
+      },
+      {
+        "command": "npmGuard.status",
+        "title": "npm-guard: Show status"
       }
     ],
     "viewsContainers": {
@@ -62,17 +94,37 @@
           "name": "Claude Usage"
         }
       ]
-    }
+    },
+    "configuration": [
+      {
+        "title": "npm-guard",
+        "properties": {
+          "npmGuard.scanOnOpen": {
+            "type": "boolean",
+            "default": true,
+            "description": "Scan the folder for the malware loader when it opens. Scanning reads file contents without executing or modifying project code."
+          }
+        }
+      }
+    ]
   },
   "scripts": {
     "compile": "tsc -p .",
     "watch": "tsc -watch -p .",
     "vscode:prepublish": "npm run compile",
-    "test": "node name-stretch.js && npm run compile && node usage-check.js"
+    "test": "node name-stretch.js && npm run compile && node usage-check.js && node src/npm-guard/guard-check.js && node src/npm-guard/guard-ui-check.js",
+    "build:cli": "npm run compile && node cli/build.js",
+    "test:cli": "npm run build:cli && node cli/cli-check.js"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/vscode": "^1.90.0",
     "typescript": "^5.5.0"
+  },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "Scanning reads file contents without executing or modifying project code, so it runs in a folder you have not trusted yet, which is when it matters most. Fixing and protection only start when you confirm."
+    }
   }
 }

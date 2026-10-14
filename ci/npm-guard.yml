@@ -1,0 +1,26 @@
+# Copy this file to .github/workflows/npm-guard.yml in the repository you want to watch.
+# Read ci/README.md first: it explains what this does and does not stop.
+#
+# It scans every push and pull request for the malware loader and fails the job when it finds one.
+# The scanner is three plain files you copy into the repository (tools/npm-guard/), so the job
+# downloads no package and runs nothing from the network.
+name: npm-guard
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      # For a stronger guarantee, replace each @v4 with the full commit SHA of that release.
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Scan for the malware loader
+        run: node tools/npm-guard/cli.js scan .
